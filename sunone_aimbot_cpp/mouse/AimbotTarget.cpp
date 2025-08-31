@@ -16,9 +16,9 @@ AimbotTarget::AimbotTarget(int x_, int y_, int w_, int h_, int cls, double px, d
 {
 }
 
-bool isStandingTarget(const cv::Rect& box)
+bool isStandingTarget(const cv::Rect& box, float threshold)
 {
-    return box.height > box.width * 1.2;
+    return box.height > box.width * threshold;
 }
 
 AimbotTarget* sortTargets(
@@ -49,11 +49,8 @@ AimbotTarget* sortTargets(
                 cv::Point targetPoint(boxes[i].x + boxes[i].width / 2, boxes[i].y + headOffsetY);
                 double distance = std::pow(targetPoint.x - center.x, 2) + std::pow(targetPoint.y - center.y, 2);
                 
+                // No standing preference for head targeting - heads are small and don't reflect body posture
                 double weightedDistance = distance;
-                if (config.prioritize_standing && !isStandingTarget(boxes[i]))
-                {
-                    weightedDistance *= 1.5;
-                }
                 
                 if (weightedDistance < minWeightedDistance)
                 {
@@ -84,9 +81,9 @@ AimbotTarget* sortTargets(
                 double distance = std::pow(targetPoint.x - center.x, 2) + std::pow(targetPoint.y - center.y, 2);
                 
                 double weightedDistance = distance;
-                if (config.prioritize_standing && !isStandingTarget(boxes[i]))
+                if (config.prioritize_standing && !isStandingTarget(boxes[i], config.standing_height_ratio_threshold))
                 {
-                    weightedDistance *= 1.5;
+                    weightedDistance *= config.standing_weight_multiplier;
                 }
                 
                 if (weightedDistance < minWeightedDistance)

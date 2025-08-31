@@ -22,6 +22,8 @@ bool prev_ignore_third_person = config.ignore_third_person;
 bool prev_shooting_range_targets = config.shooting_range_targets;
 bool prev_auto_aim = config.auto_aim;
 bool prev_prioritize_standing = config.prioritize_standing;
+float prev_standing_height_ratio_threshold = config.standing_height_ratio_threshold;
+float prev_standing_weight_multiplier = config.standing_weight_multiplier;
 bool prev_easynorecoil = config.easynorecoil;
 float prev_easynorecoilstrength = config.easynorecoilstrength;
 
@@ -73,6 +75,14 @@ void draw_target()
     ImGui::Checkbox("Shooting range targets", &config.shooting_range_targets);
     ImGui::Checkbox("Auto Aim", &config.auto_aim);
     ImGui::Checkbox("Prioritize Standing Players", &config.prioritize_standing);
+    
+    if (config.prioritize_standing)
+    {
+        ImGui::Indent();
+        ImGui::SliderFloat("Height/Width Ratio Threshold", &config.standing_height_ratio_threshold, 1.0f, 2.5f, "%.2f");
+        ImGui::SliderFloat("Non-Standing Weight Multiplier", &config.standing_weight_multiplier, 1.0f, 3.0f, "%.2f");
+        ImGui::Unindent();
+    }
 
     if (prev_disable_headshot != config.disable_headshot ||
         prev_body_y_offset != config.body_y_offset ||
@@ -81,6 +91,8 @@ void draw_target()
         prev_shooting_range_targets != config.shooting_range_targets ||
         prev_auto_aim != config.auto_aim ||
         prev_prioritize_standing != config.prioritize_standing ||
+        prev_standing_height_ratio_threshold != config.standing_height_ratio_threshold ||
+        prev_standing_weight_multiplier != config.standing_weight_multiplier ||
         prev_easynorecoil != config.easynorecoil ||
         prev_easynorecoilstrength != config.easynorecoilstrength)
     {
@@ -91,6 +103,8 @@ void draw_target()
         prev_shooting_range_targets = config.shooting_range_targets;
         prev_auto_aim = config.auto_aim;
         prev_prioritize_standing = config.prioritize_standing;
+        prev_standing_height_ratio_threshold = config.standing_height_ratio_threshold;
+        prev_standing_weight_multiplier = config.standing_weight_multiplier;
         prev_easynorecoil = config.easynorecoil;
         prev_easynorecoilstrength = config.easynorecoilstrength;
         config.saveConfig();

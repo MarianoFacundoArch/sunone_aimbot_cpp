@@ -66,6 +66,8 @@ bool Config::loadConfig(const std::string& filename)
         shooting_range_targets = false;
         auto_aim = false;
         prioritize_standing = true;
+        standing_height_ratio_threshold = 1.2f;
+        standing_weight_multiplier = 1.5f;
 
         // Mouse
         fovX = 106;
@@ -284,6 +286,8 @@ bool Config::loadConfig(const std::string& filename)
     shooting_range_targets = get_bool("shooting_range_targets", false);
     auto_aim = get_bool("auto_aim", false);
     prioritize_standing = get_bool("prioritize_standing", true);
+    standing_height_ratio_threshold = (float)get_double("standing_height_ratio_threshold", 1.2);
+    standing_weight_multiplier = (float)get_double("standing_weight_multiplier", 1.5);
 
     // Mouse
     fovX = get_long("fovX", 106);
@@ -437,7 +441,9 @@ bool Config::saveConfig(const std::string& filename)
         << "ignore_third_person = " << (ignore_third_person ? "true" : "false") << "\n"
         << "shooting_range_targets = " << (shooting_range_targets ? "true" : "false") << "\n"
         << "auto_aim = " << (auto_aim ? "true" : "false") << "\n"
-        << "prioritize_standing = " << (prioritize_standing ? "true" : "false") << "\n\n";
+        << "prioritize_standing = " << (prioritize_standing ? "true" : "false") << "\n"
+        << "standing_height_ratio_threshold = " << standing_height_ratio_threshold << "\n"
+        << "standing_weight_multiplier = " << standing_weight_multiplier << "\n\n";
 
     // Mouse
     file << "# Mouse move\n"

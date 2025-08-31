@@ -16,7 +16,7 @@ public:
     AimbotTarget(int x, int y, int w, int h, int classId, double pivotX = 0.0, double pivotY = 0.0);
 };
 
-bool isStandingTarget(const cv::Rect& box);
+bool isStandingTarget(const cv::Rect& box, float threshold);
 
 AimbotTarget* sortTargets(
     const std::vector<cv::Rect>& boxes,

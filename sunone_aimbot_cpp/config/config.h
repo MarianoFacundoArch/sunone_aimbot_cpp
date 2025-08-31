@@ -29,6 +29,8 @@ public:
     bool shooting_range_targets;
     bool auto_aim;
     bool prioritize_standing;
+    float standing_height_ratio_threshold;
+    float standing_weight_multiplier;
 
     // Mouse
     int fovX;
