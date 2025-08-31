@@ -16,6 +16,11 @@ AimbotTarget::AimbotTarget(int x_, int y_, int w_, int h_, int cls, double px, d
 {
 }
 
+bool isStandingTarget(const cv::Rect& box)
+{
+    return box.height > box.width * 1.2;
+}
+
 AimbotTarget* sortTargets(
     const std::vector<cv::Rect>& boxes,
     const std::vector<int>& classes,
@@ -30,7 +35,7 @@ AimbotTarget* sortTargets(
 
     cv::Point center(screenWidth / 2, screenHeight / 2);
 
-    double minDistance = std::numeric_limits<double>::max();
+    double minWeightedDistance = std::numeric_limits<double>::max();
     int nearestIdx = -1;
     int targetY = 0;
 
@@ -43,9 +48,16 @@ AimbotTarget* sortTargets(
                 int headOffsetY = static_cast<int>(boxes[i].height * config.head_y_offset);
                 cv::Point targetPoint(boxes[i].x + boxes[i].width / 2, boxes[i].y + headOffsetY);
                 double distance = std::pow(targetPoint.x - center.x, 2) + std::pow(targetPoint.y - center.y, 2);
-                if (distance < minDistance)
+                
+                double weightedDistance = distance;
+                if (config.prioritize_standing && !isStandingTarget(boxes[i]))
                 {
-                    minDistance = distance;
+                    weightedDistance *= 1.5;
+                }
+                
+                if (weightedDistance < minWeightedDistance)
+                {
+                    minWeightedDistance = weightedDistance;
                     nearestIdx = static_cast<int>(i);
                     targetY = targetPoint.y;
                 }
@@ -55,7 +67,7 @@ AimbotTarget* sortTargets(
 
     if (disableHeadshot || nearestIdx == -1)
     {
-        minDistance = std::numeric_limits<double>::max();
+        minWeightedDistance = std::numeric_limits<double>::max();
         for (size_t i = 0; i < boxes.size(); i++)
         {
             if (disableHeadshot && classes[i] == config.class_head)
@@ -70,9 +82,16 @@ AimbotTarget* sortTargets(
                 int offsetY = static_cast<int>(boxes[i].height * config.body_y_offset);
                 cv::Point targetPoint(boxes[i].x + boxes[i].width / 2, boxes[i].y + offsetY);
                 double distance = std::pow(targetPoint.x - center.x, 2) + std::pow(targetPoint.y - center.y, 2);
-                if (distance < minDistance)
+                
+                double weightedDistance = distance;
+                if (config.prioritize_standing && !isStandingTarget(boxes[i]))
                 {
-                    minDistance = distance;
+                    weightedDistance *= 1.5;
+                }
+                
+                if (weightedDistance < minWeightedDistance)
+                {
+                    minWeightedDistance = weightedDistance;
                     nearestIdx = static_cast<int>(i);
                     targetY = targetPoint.y;
                 }

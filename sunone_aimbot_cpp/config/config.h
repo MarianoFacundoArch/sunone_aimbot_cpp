@@ -28,6 +28,7 @@ public:
     bool ignore_third_person;
     bool shooting_range_targets;
     bool auto_aim;
+    bool prioritize_standing;
 
     // Mouse
     int fovX;
